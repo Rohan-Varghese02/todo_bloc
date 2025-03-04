@@ -14,6 +14,7 @@ class EditPage extends StatelessWidget {
     EditBloc editbloc = EditBloc();
     TextEditingController taskNameController = TextEditingController();
     TextEditingController descriptionController = TextEditingController();
+    GlobalKey<FormState> key = GlobalKey<FormState>();
     return BlocConsumer<EditBloc, EditState>(
       bloc: editbloc,
       listenWhen: (previous, current) => current is! EditActionState,
@@ -45,6 +46,7 @@ class EditPage extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Form(
+                key: key,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -55,11 +57,23 @@ class EditPage extends StatelessWidget {
                           CustomTfWidget(
                             hintText: 'Task',
                             controller: taskNameController,
+                            validator: (p0) {
+                              if (p0 == null || p0.isEmpty) {
+                                return 'Name not added';
+                              }
+                              return null;
+                            },
                           ),
                           SizedBox(height: 20),
                           CustomTfWidget(
                             hintText: 'Description',
                             controller: descriptionController,
+                            validator: (p0) {
+                              if (p0 == null || p0.isEmpty) {
+                                return 'Description not added';
+                              }
+                              return null;
+                            },
                           ),
                           Row(
                             children: [
@@ -97,15 +111,21 @@ class EditPage extends StatelessWidget {
                           btn(
                             text: 'Update',
                             onpressed: () {
-                              final editedTodo = TodoModel(
-                                id: todo.id,
-                                title: taskNameController.text,
-                                description: descriptionController.text,
-                                isCompleted: isCompleted,
-                              );
-                              print(todo.id);
-                              print(isCompleted);
-                              editbloc.add(EditSubmitButton(todo: editedTodo));
+                              if (!key.currentState!.validate()) {
+                                print('Error');
+                              } else {
+                                final editedTodo = TodoModel(
+                                  id: todo.id,
+                                  title: taskNameController.text,
+                                  description: descriptionController.text,
+                                  isCompleted: isCompleted,
+                                );
+                                print(todo.id);
+                                print(isCompleted);
+                                editbloc.add(
+                                  EditSubmitButton(todo: editedTodo),
+                                );
+                              }
                             },
                             color: Colors.amber,
                           ),

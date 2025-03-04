@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class CustomTfWidget extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
-  const CustomTfWidget({super.key, required this.hintText, required this.controller});
+  final String? Function(String?)? validator;
+  const CustomTfWidget({super.key, required this.hintText, required this.controller, this.validator});
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +22,7 @@ class CustomTfWidget extends StatelessWidget {
           borderSide: BorderSide(color: Colors.amber),
         ),
       ),
+      validator: validator,
     );
   }
 }

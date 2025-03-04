@@ -19,6 +19,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   TaskBloc taskBloc = TaskBloc();
   @override
   Widget build(BuildContext context) {
+    GlobalKey<FormState> key = GlobalKey<FormState>();
     TextEditingController taskNameController = TextEditingController();
     TextEditingController descriptionController = TextEditingController();
     return BlocConsumer<TaskBloc, TaskState>(
@@ -44,6 +45,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Form(
+                key: key,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -54,11 +56,24 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           CustomTfWidget(
                             hintText: 'Task',
                             controller: taskNameController,
+                            validator: (p0) {
+                              if (p0 == null || p0.isEmpty) {
+                                return 'Add Task Name';
+                              } else {
+                                return null;
+                              }
+                            },
                           ),
                           SizedBox(height: 20),
                           CustomTfWidget(
                             hintText: 'Description',
                             controller: descriptionController,
+                            validator: (p0) {
+                              if (p0 == null || p0.isEmpty) {
+                                return 'Add Description';
+                              }
+                              return null;
+                            },
                           ),
                         ],
                       ),
@@ -77,14 +92,19 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           btn(
                             text: 'Sumbit',
                             onpressed: () {
-                              print(selectedValue);
-                              TodoModel todos = TodoModel(
-                                title: taskNameController.text,
-                                description: descriptionController.text,
-                                isCompleted: false,
-                              );
-                              taskBloc.add(SumbitButtonEvent(todos: todos));
-                              homeBloc.add(HomeIntialFetchEvent());
+                              if (!key.currentState!.validate()) {
+                                print('False');
+                              } else {
+                                print('True');
+                                print(selectedValue);
+                                TodoModel todos = TodoModel(
+                                  title: taskNameController.text,
+                                  description: descriptionController.text,
+                                  isCompleted: false,
+                                );
+                                taskBloc.add(SumbitButtonEvent(todos: todos));
+                                homeBloc.add(HomeIntialFetchEvent());
+                              }
                             },
                             color: Colors.amber,
                           ),

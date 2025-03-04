@@ -20,7 +20,7 @@ Future<bool> addEvent(TodoModel todo) async {
   );
 
   if (response.statusCode == 201) {
-    print('Event Added ✅');
+    print('Event Added ');
     print(response.body);
 
     final responseBody = jsonDecode(response.body) as Map<String, dynamic>;
@@ -60,7 +60,11 @@ Future<void> deleteTodo(String id) async {
   final response = await http.delete(uri);
 
   if (response.statusCode == 200) {
-    print('success');
+    print('success delete');
+    print(response.body);
+  } else {
+    print('error');
+    print(response.body);
   }
 }
 

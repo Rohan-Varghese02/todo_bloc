@@ -42,6 +42,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ) async {
     await deleteTodo(event.id);
     print('Delete Button Clicked');
+    emit(HomeLoadingState());
   }
 
   FutureOr<void> homeEditButtonEvent(
